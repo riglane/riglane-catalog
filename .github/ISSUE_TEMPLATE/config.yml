@@ -1,0 +1,17 @@
+# A malicious entry must NOT arrive as a public issue — a public thread naming
+# working malicious code, before anything is revoked, is the worst possible
+# order. Blank issues stay disabled so that path is not the default one.
+blank_issues_enabled: false
+contact_links:
+  - name: A malicious or compromised entry
+    url: https://github.com/todor-rusev/riglane-catalog/security/advisories/new
+    about: Private reporting, always. It becomes a revocation, which the CLI then refuses to install from.
+  - name: Publish a workflow
+    url: https://github.com/todor-rusev/riglane-catalog#publishing-a-workflow
+    about: Not an issue — fork, add two files, open a pull request. No permission needed.
+  - name: A question about a specific entry
+    url: https://github.com/todor-rusev/riglane/discussions
+    about: Each entry has a discussion thread. Problems with the workflow itself belong in the author's repository.
+  - name: A question about Riglane itself
+    url: https://github.com/todor-rusev/riglane/discussions/categories/q-a
+    about: Discussions → Q&A on the main repository.

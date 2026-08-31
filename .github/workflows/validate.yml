@@ -1,0 +1,63 @@
+# Catalog CI — two jobs, two very different trust postures.
+#
+# validate (pull_request): runs on EVERY entry PR, including forks. GitHub
+#   gives fork PRs a READ-ONLY token and NO secrets by construction — even a
+#   PR written to steal a deploy key finds nothing to steal here. The job
+#   READS the submitted entry, fetches the author's tree at the pinned SHA,
+#   regenerates the lock and compares. It never executes contributed code:
+#   `riglane catalog pack` and `riglane validate-workflow` are static analysis.
+#
+# notify-site (push to main): tells the docs repository to rebuild, so a
+#   merged entry is live in ~a minute. Needs a repo-scoped token with access
+#   to the docs repository (secret DOCS_DISPATCH_TOKEN) — present only on
+#   push, never exposed to pull requests.
+
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # riglane comes from the public code mirror (dist/ is committed there,
+      # so no build step is needed); yaml is the only other dependency.
+      - run: npm install --no-audit --no-fund
+
+      # The danger rules decide whether a submitted entry is refused, so they
+      # are checked before they are trusted to judge one. Node's built-in
+      # runner — no test dependency enters this repository.
+      - run: npm test
+
+      - run: node scripts/validate-entries.mjs
+
+  notify-site:
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Signal the docs repository (site rebuild picks up the merged entry)
+        env:
+          TOKEN: ${{ secrets.DOCS_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "DOCS_DISPATCH_TOKEN not configured — skipping the site signal." >&2
+            exit 0
+          fi
+          curl -sf -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/riglane/riglane-docs/dispatches \
+            -d '{"event_type":"catalog-updated"}'

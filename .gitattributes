@@ -1,0 +1,5 @@
+# Lock files are byte-compared against a deterministic LF composition (BUG-243).
+*.yaml text eol=lf
+*.json text eol=lf
+*.mjs  text eol=lf
+*.md   text eol=lf

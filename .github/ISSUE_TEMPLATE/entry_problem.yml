@@ -1,0 +1,53 @@
+name: Problem with an entry
+description: An entry is broken, inaccurate, or its source has gone away.
+labels: [entry]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **If the entry looks malicious, stop and report it privately instead**
+        (Security → Report a vulnerability). A public issue pointing at working
+        malicious code, before it has been revoked, helps the wrong people first.
+
+        This form is for the ordinary kinds of broken.
+
+  - type: input
+    id: entry-id
+    attributes:
+      label: Entry id
+      placeholder: nightly-repo-audit
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem
+      options:
+        - The source repository or pinned commit no longer exists
+        - The description does not match what the workflow does
+        - It fails to install
+        - It installs but does not run
+        - The metadata is wrong (license, requirements, author)
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: detail
+    attributes:
+      label: What you saw
+      description: >
+        If installation failed, the CLI output is the most useful thing — it says
+        which check refused and why. A mismatch between the description and the
+        inventory is worth quoting both halves.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        A note on what this repository can fix: the **code lives in the author's
+        repository**, so a bug in the workflow itself belongs there. What we can
+        do here is correct metadata, remove an entry whose source is gone, or
+        revoke one that turned out to be harmful.

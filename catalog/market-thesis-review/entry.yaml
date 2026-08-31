@@ -1,0 +1,99 @@
+id: market-thesis-review
+name: Market thesis review
+version: 3
+
+summary: >-
+  A bull-versus-bear research panel on one ticker: four analysts, a debate, a
+  risk rotation, a human sign-off, a journal that scores the call.
+
+description: >
+  Runs a small research firm over a single ticker and leaves behind an argument
+  you can audit rather than a number you have to trust.
+
+  Four specialist analysts — technical, sentiment, news & macro, and
+  fundamentals — work from the same verified price snapshot, each stating a
+  stance and, more usefully, what would have to be true for it to be wrong. Each
+  analyst is its own step holding ONLY its own tools, and each sits behind a
+  route, so choosing a subset of the panel skips the rest through the engine
+  rather than through an agent's good behaviour.
+
+  A bull and a bear then debate under a round budget, engaging each other's last
+  answer instead of restating openings, and every round is frozen to its own file
+  so the history is readable afterwards. A research manager picks a side and
+  writes the investment plan; a trader turns it into a concrete proposal; three
+  risk officers — aggressive, conservative and neutral — argue it in rotation
+  under a second budget. A portfolio manager issues the final decision, and a
+  human signs THAT step before the run may complete. The approval can be given
+  outside the terminal, from a browser or a webhook, without the run losing its
+  place.
+
+  The decision is appended to a journal that a later run scores against realized
+  return and alpha versus a benchmark, then reflects on — so the panel starts
+  each analysis having read how its previous calls actually did, on this ticker
+  and on others.
+
+  Every handoff between steps is checked against a schema before the next step
+  may start, so a malformed analyst report or an out-of-vocabulary
+  recommendation stops the run rather than propagating. No subagent step has a
+  shell: every one of the fourteen declares `deny: [shell]`, so an analyst
+  reaches its data through the declared tools or not at all — it cannot write
+  its own fetcher, and it cannot invoke a bundled script behind the tool layer's
+  back. (Enforced by the generated per-step agent definition on hosts that have
+  one; instruction-only on Cursor and Codex, which have no per-step identity.)
+
+  Per run you choose the analyst subset, the two round budgets, the report
+  language (which the sign-off question also speaks), stock or crypto, and the
+  data vendor. There is no LLM API key: the harness you already run supplies the
+  model, and the default vendor is keyless — an optional Alpha Vantage or FRED
+  key only widens the data, and without one the affected tools report the gap
+  honestly instead of inventing numbers. Nothing is written outside the run
+  directory and the decision journal.
+
+  A behavioral-parity reconstruction of TauricResearch/TradingAgents
+  (Apache-2.0): the agent roles with their tasks (prompts carried over nearly
+  verbatim), the process logic, the tool vocabulary and the decision memory
+  are theirs; the execution machinery is Riglane's. The source repository is
+  MIT with that Apache-2.0 carve-out — its NOTICE and the TradingAgents
+  license travel with the code.
+
+  NOT INVESTMENT ADVICE. This produces a written argument and a recorded
+  decision for research and workflow-demonstration purposes only.
+author: todor-rusev
+license: MIT
+
+categories:
+  - research
+  - multi-agent
+
+tags:
+  - routes
+  - loop-back
+  - human-approval
+  - structured-output
+  - script-tools
+  - finance
+
+source:
+  repo: https://github.com/todor-rusev/riglane-trader.git
+  path: workflow/market-thesis-review
+  sha: 4979766fb089905f532a168bcd66e809a9c7ff07
+
+requires:
+  riglane: ">=0.1.0"
+  hosts: []
+  runtimes:
+    - "node >=18"
+  platforms: []
+  mcp_servers: []
+
+# The author's own claim; the catalog does not verify it. Recorded only for runs
+# that went the WHOLE way through — twenty of twenty steps, the human gate
+# answered, the report assembled — not for runs that merely started.
+#
+# ⚠ Both entries are v2 runs. v3 narrowed every subagent step's surface
+# (deny: [shell]) and reshaped get_stock_data's window arguments; it has NOT yet
+# been driven end-to-end. These lines stay because those runs happened, but they
+# are not evidence about v3 — a v3 run earns its own line.
+tested_on:
+  - { host: Claude Code, version: "2.1.238", date: 2026-08-19, result: pass }
+  - { host: Claude Code, version: "2.1.238", date: 2026-08-21, result: pass }

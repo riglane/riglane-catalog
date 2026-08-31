@@ -1,0 +1,19 @@
+{
+  "name": "riglane-catalog",
+  "private": true,
+  "type": "module",
+  "description": "The public catalog of shared Riglane workflows — pointers + machine-generated capability inventories. Code stays in the author's repository.",
+  "scripts": {
+    "validate": "node scripts/validate-entries.mjs",
+    "test": "node --test \"scripts/*.test.mjs\"",
+    "build": "node scripts/build-index.mjs"
+  },
+  "dependencies": {
+    "riglane": "^0.1.0",
+    "yaml": "^2.6.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "allowScripts": {}
+}

@@ -1,0 +1,25 @@
+{
+  "catalog_index_version": 1,
+  "entries": [
+    {
+      "id": "market-thesis-review",
+      "summary": "A bull-versus-bear research panel on one ticker: four analysts, a debate, a risk rotation, a human sign-off, a journal that scores the call.",
+      "author": "todor-rusev",
+      "level": "community",
+      "script_tools": 19,
+      "deciders": 6,
+      "categories": [
+        "research",
+        "multi-agent"
+      ],
+      "tags": [
+        "routes",
+        "loop-back",
+        "human-approval",
+        "structured-output",
+        "script-tools",
+        "finance"
+      ]
+    }
+  ]
+}
